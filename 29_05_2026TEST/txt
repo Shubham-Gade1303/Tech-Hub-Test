@@ -1,0 +1,204 @@
+SQl
+
++-----------+--------+-----+----------+---------+
+| StudentID | Name   | Age | CourseID | BatchID |
++-----------+--------+-----+----------+---------+
+|         1 | Rohan  |  22 |        1 |       1 |
+|         2 | Kiran  |  24 |        1 |       1 |
+|         3 | Meena  |  23 |        1 |       2 |
+|         4 | Asha   |  25 |        2 |       3 |
+|         5 | Vikas  |  26 |        2 |       3 |
+|         6 | Neha   |  21 |        3 |       4 |
+|         7 | Pooja  |  22 |        1 |       2 |
+|         8 | Ankit  |  24 |        1 |       1 |
+|         9 | Raj    |  28 |        1 |       2 |
+|        10 | Simran |  20 |        1 |       1 |
++-----------+--------+-----+----------+---------+
+
++----------+------------+----------+
+| CourseID | CourseName | Duration |
++----------+------------+----------+
+|        1 | Java       |        6 |
+|        2 | Python     |        4 |
+|        3 | SQL        |        3 |
++----------+------------+----------+
+
+
++----------+------------+----------+
+| CourseID | CourseName | Duration |
++----------+------------+----------+
+|        1 | Java       |        6 |
+|        2 | Python     |        4 |
+|        3 | SQL        |        3 |
++----------+------------+----------+
+
++---------+-----------+------------+----------+
+| BatchID | BatchName | StartDate  | CourseID |
++---------+-----------+------------+----------+
+|       1 | Java_A    | 2026-01-10 |        1 |
+|       2 | Java_B    | 2026-02-15 |        1 |
+|       3 | Python_A  | 2026-03-01 |        2 |
+|       4 | SQL_A     | 2026-04-01 |        3 |
++---------+-----------+------------+----------+
+
+
+1:- 1.List all batches along with their corresponding course names.
+SELECT 
+    B.BatchName,
+    C.CourseName
+FROM Batches B
+INNER JOIN Course C
+ON B.CourseID = C.CourseID;
++-----------+------------+
+| BatchName | CourseName |
++-----------+------------+
+| Java_A    | Java       |
+| Java_B    | Java       |
+| Python_A  | Python     |
+| SQL_A     | SQL        |
++-----------+------------+
+
+
+2:- 2.Count the number of students enrolled in each course.
+SELECT
+    C.CourseName,
+    COUNT(S.StudentID) AS TotalStudents
+FROM Course C
+LEFT JOIN Students S
+ON C.CourseID = S.CourseID
+GROUP BY C.CourseName;
++------------+---------------+
+| CourseName | TotalStudents |
++------------+---------------+
+| Java       |             7 |
+| Python     |             2 |
+| SQL        |             1 |
++------------+---------------+
+
+3:- 3.Retrieve all students along with their batch names and course names. 
+SELECT
+    S.Name AS StudentName,
+    B.BatchName,
+    C.CourseName
+FROM Students S
+JOIN Batches B
+ON S.BatchID = B.BatchID
+JOIN Course C
+ON S.CourseID = C.CourseID;
++-------------+-----------+------------+
+| StudentName | BatchName | CourseName |
++-------------+-----------+------------+
+| Rohan       | Java_A    | Java       |
+| Kiran       | Java_A    | Java       |
+| Meena       | Java_B    | Java       |
+| Pooja       | Java_B    | Java       |
+| Ankit       | Java_A    | Java       |
+| Raj         | Java_B    | Java       |
+| Simran      | Java_A    | Java       |
+| Asha        | Python_A  | Python     |
+| Vikas       | Python_A  | Python     |
+| Neha        | SQL_A     | SQL        |
++-------------+-----------+------------+
+
+4:-4.Find the batch with the maximum number of students enrolled.
+SELECT
+    B.BatchName,
+    COUNT(S.StudentID) AS TotalStudents
+FROM Batches B
+JOIN Students S
+ON B.BatchID = S.BatchID
+GROUP BY B.BatchName
+ORDER BY TotalStudents DESC
+LIMIT 1;
++-----------+---------------+
+| BatchName | TotalStudents |
++-----------+---------------+
+| Java_A    |             4 |
++-----------+---------------+
+
+5:-.Find the instructor name, course name, and the number of students enrolled in each  
+instructor's course.
+SELECT
+    I.Name AS InstructorName,
+    C.CourseName,
+    COUNT(S.StudentID) AS TotalStudents
+FROM Instructors I
+JOIN Course C
+ON I.CourseID = C.CourseID
+LEFT JOIN Students S
+ON C.CourseID = S.CourseID
+GROUP BY I.Name, C.CourseName;
++----------------+------------+---------------+
+| InstructorName | CourseName | TotalStudents |
++----------------+------------+---------------+
+| Amit           | Java       |             7 |
+| Rahul          | Python     |             2 |
+| Sneha          | SQL        |             1 |
++----------------+------------+---------------+
+
+6:-List all students, their course, batch name, and instructor name (if assigned).
+SELECT
+    S.Name AS StudentName,
+    C.CourseName,
+    B.BatchName,
+    I.Name AS InstructorName
+FROM Students S
+LEFT JOIN Course C
+ON S.CourseID = C.CourseID
+LEFT JOIN Batches B
+ON S.BatchID = B.BatchID
+LEFT JOIN Instructors I
+ON C.CourseID = I.CourseID;
++-------------+------------+-----------+----------------+
+| StudentName | CourseName | BatchName | InstructorName |
++-------------+------------+-----------+----------------+
+| Rohan       | Java       | Java_A    | Amit           |
+| Kiran       | Java       | Java_A    | Amit           |
+| Meena       | Java       | Java_B    | Amit           |
+| Asha        | Python     | Python_A  | Rahul          |
+| Vikas       | Python     | Python_A  | Rahul          |
+| Neha        | SQL        | SQL_A     | Sneha          |
+| Pooja       | Java       | Java_B    | Amit           |
+| Ankit       | Java       | Java_A    | Amit           |
+| Raj         | Java       | Java_B    | Amit           |
+| Simran      | Java       | Java_A    | Amit           |
++-------------+------------+-----------+----------------+
+
+7:-Find students who are older than the average age of all students.
+SELECT *
+FROM Students
+WHERE Age >
+(
+    SELECT AVG(Age)
+    FROM Students
+);
++-----------+-------+-----+----------+---------+
+| StudentID | Name  | Age | CourseID | BatchID |
++-----------+-------+-----+----------+---------+
+|         2 | Kiran |  24 |        1 |       1 |
+|         4 | Asha  |  25 |        2 |       3 |
+|         5 | Vikas |  26 |        2 |       3 |
+|         8 | Ankit |  24 |        1 |       1 |
+|         9 | Raj   |  28 |        1 |       2 |
++-----------+-------+-----+----------+---------+
+
+
+9:-.Retrieve the courses with at least 5 students enrolled.
+SELECT
+    C.CourseName,
+    COUNT(S.StudentID) AS TotalStudents
+FROM Course C
+JOIN Students S
+ON C.CourseID = S.CourseID
+GROUP BY C.CourseName
+HAVING COUNT(S.StudentID) >= 5;
+
++------------+---------------+
+| CourseName | TotalStudents |
++------------+---------------+
+| Java       |             7 |
++------------+---------------+
+
+
+
+

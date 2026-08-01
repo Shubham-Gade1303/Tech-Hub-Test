@@ -1,0 +1,67 @@
+
+
+
+import java.util.*;
+
+public class Q10 {
+
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter Number of Words: ");
+        int n = sc.nextInt();
+
+        HashMap<Integer, String> map = new HashMap<>();
+
+        System.out.println("Enter Words:");
+
+        for (int i = 0; i < n; i++) {
+            map.put(i, sc.next());
+        }
+// count the frequncy of the words 
+        System.out.println("Words with Unique Character Frequencies:");
+
+        for (int i = 0; i < n; i++) {
+
+            String word = map.get(i);
+
+            int freq[] = new int[256];
+
+            for (int j = 0; j < word.length(); j++) {
+
+                freq[word.charAt(j)]++;
+
+            }
+
+            boolean unique = true;
+
+            for (int j = 0; j < 256; j++) {
+
+                if (freq[j] > 0) {
+
+                    for (int k = j + 1; k < 256; k++) {
+
+                        if (freq[k] > 0 && freq[j] == freq[k]) {
+
+                            unique = false;y
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            if (unique) {
+
+                System.out.println(word);
+
+            }
+
+        }
+
+    }
+
+}
