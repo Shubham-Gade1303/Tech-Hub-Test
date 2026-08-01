@@ -23,7 +23,7 @@ public class Q5{
 
         try{
             if(withdraw>balance){
-                throw new InsufficientBalanceException("Insufficient Balanc eException ");
+                throw new InsufficientBalanceException("Insufficient Balance Exception ");
             }
 
             balance= balance-withdraw;
