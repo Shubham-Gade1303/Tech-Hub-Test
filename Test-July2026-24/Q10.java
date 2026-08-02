@@ -17,9 +17,8 @@
  
 // Output 
 // Words with Unique Character Frequencies: 
-// aabbccc 
 // banana 
-// abcde 
+
  
  
  
